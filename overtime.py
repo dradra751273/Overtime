@@ -33,10 +33,11 @@ def clean_data(source_df: pd.DataFrame):
     result["mons"] = result["mons"].str.split("/").map(lambda x: str(int(x[1])))
     # split hours and minutes
     for col in en_cols[4:]:
-        result[f"{col}_H"] = result[col].str.split("-", expand=True).loc[:, 0].fillna(0).astype(int)
-        result[f"{col}_M"] = result[col].str.split("-", expand=True).loc[:, 1].fillna(0).astype(int)
+        result[col] = result.fillna("0-0")
+        result[f"{col}_H"] = result[col].str.split("-", expand=True).loc[:, 0].astype(int)
+        result[f"{col}_M"] = result[col].str.split("-", expand=True).loc[:, 1].astype(int)
 
-    result = result.drop(en_cols[4:], axis="columns").fillna(0)
+    result = result.drop(en_cols[4:], axis="columns")
 
     return result
 
