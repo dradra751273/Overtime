@@ -135,7 +135,6 @@ class OvertimeStastics:
 
         personal_data = self._personal_data()
         result = pd.DataFrame(personal_data).T
-        pd.set_option("future.no_silent_downcasting", True)
         result.fillna(0, inplace=True)
         result = self._round_minutes_up(result)
         result.reset_index(names=["name"], inplace=True)
