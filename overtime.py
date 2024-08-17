@@ -48,19 +48,20 @@ class OvertimeStastics:
         "副署長": 2,
         "主任秘書": 3,
         "組長": 4,
-        "副組長": 5,
-        "簡任技正": 6,
-        "簡任視察": 7,
-        "專門委員": 8,
-        "科長": 9,
-        "技正": 10,
-        "視察": 11,
-        "專員": 12,
-        "科員": 13,
-        "助理員": 14,
-        "專案規劃師": 15,
-        "專案分析師": 16,
-        "資安系統分析師": 17,
+        "主任": 5,
+        "副組長": 6,
+        "簡任技正": 7,
+        "簡任視察": 8,
+        "專門委員": 9,
+        "科長": 10,
+        "技正": 11,
+        "視察": 12,
+        "專員": 13,
+        "科員": 14,
+        "助理員": 15,
+        "專案規劃師": 16,
+        "專案分析師": 17,
+        "資安系統分析師": 18,
     }
     CH_COlS = [
         "單位名稱",
@@ -230,6 +231,7 @@ class OvertimeStastics:
 
         sheets = ["原始資料", "核可", "請款", "補休", "剩餘"]
         writer = pd.ExcelWriter(file, engine="xlsxwriter")
+        wb = writer.book
 
         for sheet in sheets:
             if sheet == "原始資料":
@@ -238,17 +240,23 @@ class OvertimeStastics:
                 cols = [col for col in df.columns if sheet in col]
                 export_df = df[list(df.columns[:3]) + cols].copy()
 
-            export_df.to_excel(writer, sheet_name=sheet, index=True)
-            ws = writer.sheets[sheet]
-            ws.add_format(
+            export_df.to_excel(writer, sheet_name=sheet, index=False)
+
+            format = wb.add_format(
                 {
                     "align": "center",
                     "valign": "vcenter",
                     "text_wrap": True,
                     "font_name": "微軟正黑體",
-                    "font_size": 14,
-                    # "border": 1,
+                    "font_size": 12,
                 }
             )
 
-        writer.save()
+            sheet = writer.sheets[sheet]
+            for col_num, value in enumerate(export_df.columns.values):
+                sheet.write(0, col_num, value, format)
+
+            sheet.set_column(0, 2, 13, format)
+            sheet.set_column(3, len(export_df.columns), 10, format)
+
+        writer.close()
