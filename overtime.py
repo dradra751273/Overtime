@@ -229,6 +229,7 @@ class OvertimeStastics:
         """Export DataFrame to Excel file"""
 
         sheets = ["原始資料", "核可", "請款", "補休", "剩餘"]
+        writer = pd.ExcelWriter(file, engine="xlsxwriter")
 
         for sheet in sheets:
             if sheet == "原始資料":
@@ -237,4 +238,17 @@ class OvertimeStastics:
                 cols = [col for col in df.columns if sheet in col]
                 export_df = df[list(df.columns[:3]) + cols].copy()
 
-            export_df.to_csv(f"{sheet}.csv", index=True, encoding="cp950")
+            export_df.to_excel(writer, sheet_name=sheet, index=True)
+            ws = writer.sheets[sheet]
+            ws.add_format(
+                {
+                    "align": "center",
+                    "valign": "vcenter",
+                    "text_wrap": True,
+                    "font_name": "微軟正黑體",
+                    "font_size": 14,
+                    # "border": 1,
+                }
+            )
+
+        writer.save()
