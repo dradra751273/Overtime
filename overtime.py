@@ -230,27 +230,11 @@ class OvertimeStastics:
 
         sheets = ["原始資料", "核可", "請款", "補休", "剩餘"]
 
-        wb = xw.Book()
         for sheet in sheets:
-            ws = wb.sheets.add(sheet, after=wb.sheets[-1])
             if sheet == "原始資料":
                 export_df = df.copy()
             else:
                 cols = [col for col in df.columns if sheet in col]
                 export_df = df[list(df.columns[:3]) + cols].copy()
 
-            ws.range("A1").value = export_df
-            ws.range("A1").value = "序號"
-            # style setting
-            ws.range("A1").expand(
-                "table"
-            ).api.VerticalAlignment = VAlign.xlVAlignCenter
-            ws.range("A1").expand(
-                "table"
-            ).api.HorizontalAlignment = HAlign.xlHAlignCenter
-            ws.autofit(axis="columns")
-
-        wb.sheets["工作表1"].delete()  # delete default sheet
-        wb.sheets["原始資料"].activate()
-        wb.save("output.xlsx")
-        wb.close()
+            export_df.to_csv(f"{sheet}.csv", index=True)
