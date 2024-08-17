@@ -237,4 +237,4 @@ class OvertimeStastics:
                 cols = [col for col in df.columns if sheet in col]
                 export_df = df[list(df.columns[:3]) + cols].copy()
 
-            export_df.to_csv(f"{sheet}.csv", index=True)
+            export_df.to_csv(f"{sheet}.csv", index=True, encoding="cp950")
