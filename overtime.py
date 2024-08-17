@@ -1,8 +1,5 @@
 import pandas as pd
 
-import xlwings as xw
-from xlwings.constants import VAlign, HAlign
-
 
 class OvertimeStastics:
     """Overtime Stastics"""
