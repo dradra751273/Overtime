@@ -135,6 +135,7 @@ class OvertimeStastics:
 
         personal_data = self._personal_data()
         result = pd.DataFrame(personal_data).T
+        pd.set_option("future.no_silent_downcasting", True)
         result.fillna(0, inplace=True)
         result = self._round_minutes_up(result)
         result.reset_index(names=["name"], inplace=True)
@@ -231,7 +232,7 @@ class OvertimeStastics:
         sheets = ["原始資料", "核可", "請款", "補休", "剩餘"]
 
         with xw.App(visible=False) as app:
-            wb = app.books.add()
+            wb = xw.Book()
             for sheet in sheets:
                 ws = wb.sheets.add(sheet, after=wb.sheets[-1])
                 if sheet == "原始資料":
