@@ -247,8 +247,15 @@ class OvertimeStastics:
         for y_m in year_month_list:
             y_m_df = df[df["year-month"] == y_m]
             for col in cal_cols:
+                year, month = y_m.split("-")[0], y_m.split("-")[1]
+                if int(month) < 10:
+                    month = "0" + month
+                # convert datatype to int
                 y_m_df.loc[:, col] = y_m_df.loc[:, col].astype(int)
-                result = {**result, **{f"[{y_m}]_{col}": y_m_df[col].sum()}}
+                result = {
+                    **result,
+                    **{f"[{year}-{month}]_{col}": y_m_df[col].sum()},
+                }
 
         return result
 
