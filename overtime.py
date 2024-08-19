@@ -4,7 +4,7 @@ import pandas as pd
 class OvertimeStastics:
     """Overtime Stastics"""
 
-    SORT_KEY = {
+    ADI_SORT_KEY = {
         # units
         "署長室": 1,
         "陳副署長室": 2,
@@ -60,6 +60,66 @@ class OvertimeStastics:
         "專案分析師": 17,
         "資安系統分析師": 18,
     }
+    ACS_SORT_KEY = {
+        "署長室": 0,
+        "林副署長室": 1,
+        "鄭副署長室": 2,
+        "主任秘書室": 3,
+        "綜合規劃組": 4,
+        "策略規劃科": 5,
+        "計畫審查科": 6,
+        "組織人力科": 7,
+        "綜合業務科": 8,
+        "應用服務科": 9,
+        "通報應變組": 10,
+        "設施防護科": 11,
+        "應變處理科": 12,
+        "威脅分析科": 13,
+        "情勢研析科": 14,
+        "輔導培訓組": 15,
+        "基準發展科": 16,
+        "人才培訓科": 17,
+        "機關輔導科": 18,
+        "教育推廣科": 19,
+        "稽核檢查組": 20,
+        "稽核一科": 21,
+        "稽核二科": 22,
+        "稽核及分析科": 23,
+        "檢測演練科": 24,
+        "法規及國合組": 25,
+        "法規推動科": 26,
+        "法制行政科": 27,
+        "國際合作科": 28,
+        "秘書室": 29,
+        "秘書室一科": 30,
+        "秘書室二科": 31,
+        "人事室": 32,
+        "政風室": 33,
+        "主計室": 34,
+        "署長": 35,
+        "副署長": 36,
+        "主任秘書": 37,
+        "組長": 38,
+        "副組長": 39,
+        "高級分析師": 40,
+        "簡任視察": 41,
+        "主任": 42,
+        "科長": 43,
+        "代理科長": 44,
+        "分析師": 45,
+        "設計師": 46,
+        "助理程式設計師": 47,
+        "視察": 48,
+        "專員": 49,
+        "科員": 50,
+        "助理員": 51,
+        "書記": 52,
+        "高級資安程式設計師": 53,
+        "資安系統分析師": 54,
+        "資安程式設計師": 55,
+        "專案分析師": 56,
+    }
+
     CH_COlS = [
         "單位名稱",
         "職稱",
@@ -93,7 +153,16 @@ class OvertimeStastics:
     }
     NON_CAL_COLS = ["unit", "job", "name", "year-month"]
 
-    def __init__(self, file: str):
+    def __init__(self, file: str, sort_key: str = "adi"):
+
+        # determine sort key
+        if sort_key == "adi":
+            self.sort_key = self.ADI_SORT_KEY
+        elif sort_key == "acs":
+            self.sort_key = self.ACS_SORT_KEY
+        else:
+            raise ValueError("Invalid sort key")
+
         self.source_df = self._clean(pd.read_excel(file))
 
     def _clean(self, df: pd.DataFrame):
@@ -122,7 +191,7 @@ class OvertimeStastics:
 
         # 3) sort DataFrame
         df = df.sort_values(
-            by=["unit", "job"], key=lambda x: x.map(self.SORT_KEY)
+            by=["unit", "job"], key=lambda x: x.map(self.sort_key)
         )
         df.reset_index(drop=True, inplace=True)
 
@@ -204,7 +273,9 @@ class OvertimeStastics:
 
         # sort columns
         basicinfo_cols = ["unit", "job", "name"]
-        cal_cols = [col for col in df.columns if col not in basicinfo_cols]
+        cal_cols = sorted(
+            [col for col in df.columns if col not in basicinfo_cols]
+        )
         result = df[basicinfo_cols + cal_cols]
 
         # rename columns
