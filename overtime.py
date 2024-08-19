@@ -203,7 +203,7 @@ class OvertimeStastics:
         personal_data = self._personal_data()
         result = pd.DataFrame(personal_data).T
         result.fillna(0, inplace=True)
-        result = self._round_minutes_up(result)
+        result = self._round_minutes_up(result).copy()
         result.reset_index(names=["name"], inplace=True)
         result = result.set_axis(range(1, len(result) + 1))
         result = self._reformat_columns(result)
@@ -252,7 +252,7 @@ class OvertimeStastics:
 
         return result
 
-    def _round_minutes_up(self, df):
+    def _round_minutes_up(self, df) -> pd.DataFrame:
         """Round minutes up to hours"""
 
         result = df.copy()
