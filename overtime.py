@@ -205,7 +205,7 @@ class OvertimeStastics:
         result.fillna(0, inplace=True)
         result = self._round_minutes_up(result).copy()
         result.reset_index(names=["name"], inplace=True)
-        result = result.set_axis(range(1, len(result) + 1))
+        result = result.set_axis(range(1, len(result) + 1), axis="index")
         result = self._reformat_columns(result)
         self._export(result, file)
 
